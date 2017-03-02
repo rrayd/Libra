@@ -42,5 +42,8 @@
         "single"
       ]
     }
+  },
+  "dependencies": {
+    "wiredep": "^4.0.0"
   }
 }
