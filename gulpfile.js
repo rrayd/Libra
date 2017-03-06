@@ -5,6 +5,7 @@ const browserSync = require('browser-sync').create();
 const del = require('del');
 const wiredep = require('wiredep').stream;
 const runSequence = require('run-sequence');
+const compass = require('compass-importer');
 
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
@@ -12,13 +13,14 @@ const reload = browserSync.reload;
 var dev = true;
 
 gulp.task('styles', () => {
-  return gulp.src('app/styles/*.scss')
+  return gulp.src('app/styles/*.sass')
     .pipe($.plumber())
     .pipe($.if(dev, $.sourcemaps.init()))
     .pipe($.sass.sync({
       outputStyle: 'expanded',
       precision: 10,
-      includePaths: ['.']
+      includePaths: ['.'],
+      importer: compass
     }).on('error', $.sass.logError))
     .pipe($.autoprefixer({browsers: ['> 1%', 'last 2 versions', 'Firefox ESR']}))
     .pipe($.if(dev, $.sourcemaps.write()))
@@ -113,7 +115,7 @@ gulp.task('serve', () => {
       '.tmp/fonts/**/*'
     ]).on('change', reload);
 
-    gulp.watch('app/styles/**/*.scss', ['styles']);
+    gulp.watch('app/styles/**/*.sass', ['styles']);
     gulp.watch('app/scripts/**/*.js', ['scripts']);
     gulp.watch('app/fonts/**/*', ['fonts']);
     gulp.watch('bower.json', ['wiredep', 'fonts']);
@@ -151,7 +153,7 @@ gulp.task('serve:test', ['scripts'], () => {
 
 // inject bower components
 gulp.task('wiredep', () => {
-  gulp.src('app/styles/*.scss')
+  gulp.src('app/styles/*.sass')
     .pipe($.filter(file => file.stat && file.stat.size))
     .pipe(wiredep({
       ignorePath: /^(\.\.\/)+/
