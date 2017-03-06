@@ -1,4 +1,100 @@
 @import compass
+@import url('https://fonts.googleapis.com/css?family=Pacifico');
 
+.browserupgrade
+  margin: 0.2em 0
+  background: #ccc
+  color: #000
+  padding: 0.2em 0
+
+html
+  margin: 0
+  padding: 0
+  width: 100%
+  height: 100%
+  +background-image(linear-gradient(#8e9495, #a4a395))
 body
-  +background-image(linear-gradient(white, #cccccc 30%, #bbbbbb 70%, #aaaaaa))
+  margin: 0
+  padding: 0
+
+.app
+  margin: 0 auto
+  width: 1024px
+
+/* libra parts --> */
+.libra-parts
+  position: relative
+  width: 1024px
+  height: 310px
+.libra-part-back
+  position: absolute
+  left: 50%
+  top: 166px
+  margin-left: -420px
+  width: 841px
+  height: 13px
+  background: url('../images/libra-part-back.png') no-repeat
+.libra-part-front
+  position: absolute
+  left: 50%
+  top: 179px
+  margin-left: -512px
+  width: 1024px
+  height: 138px
+  background: url('../images/libra-part-front.png') no-repeat
+.libra-part-platform-left
+  position: absolute
+  left: 50%
+  top: 104px
+  margin-left: -512px
+  width: 414px
+  height: 105px
+  background: url('../images/libra-part-platform-left.png') no-repeat
+.libra-part-platform-right
+  position: absolute
+  left: 50%
+  top: 104px
+  margin-left: 99px
+  width: 414px
+  height: 105px
+  background: url('../images/libra-part-platform-right.png') no-repeat
+.libra-part-axis
+  position: absolute
+  left: 50%
+  top: 240px
+  margin-left: -12px
+  width: 24px
+  height: 24px
+  background: url('../images/libra-part-axis-red.png') no-repeat
+.libra-part-axis-green
+  width: 24px
+  height: 24px
+  background: url('../images/libra-part-axis-green.png') no-repeat
+  opacity: 0
+.libra-part-arrow
+  position: absolute
+  left: 50%
+  top: 24px
+  margin-left: -4px
+  width: 6px
+  height: 228px
+  background: url('../images/libra-part-arrow.png') no-repeat bottom
+  @include transform(rotate(0deg))
+  @include transform-origin(0%, 100%);
+.libra-part-arrow-lightmark
+  margin-left: 1px
+  width: 5px
+  height: 24px
+  background: #ff424c
+  +border-radius(2px 2px 0 0)
+.libra-logo
+  position: absolute
+  left: 50%;
+  top: 274px
+  width: 44px
+  height: 21px
+  margin-left: -22px
+  color: #838887
+  font-family: 'Pacifico', cursive
+  font-size: 9pt
+/* <-- libra parts */
