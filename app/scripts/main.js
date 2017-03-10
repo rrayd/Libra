@@ -128,6 +128,8 @@ function libraCalcInit(e) {
 		dragBag.elem.style.left = e.pageX - dragBag.shiftX - localBagsCoords.left + 'px';
 		dragBag.elem.style.top = '';
 		dragBag.elem.style.bottom = 0 + 'px';
+		// инициализируем расчет нагрузки
+		libraCalc();
 	} else {
 		// ставим на платформу
 		var triggerObject = document.body.getElementsByClassName(trigger),
@@ -136,6 +138,8 @@ function libraCalcInit(e) {
 		dragBag.elem.style.left = e.pageX - dragBag.shiftX - localTriggerCoords.left + 'px';
 		dragBag.elem.style.top = '';
 		dragBag.elem.style.bottom = '0';
+		// инициализируем расчет нагрузки
+		libraCalc();
 	}
 }
 function findTrigger(e) {
@@ -151,4 +155,99 @@ function findTrigger(e) {
 	dst[0].hidden = true;
 	dst[1].hidden = true;
 	return trigger_state;
+}
+// непосредственный расчет нагрузки
+function libraCalc () {
+	var currentWeight = [],
+		currentOurWeight = [],
+		currentAmt = [],
+		platform_left = document.body.getElementsByClassName('lt-left'),
+		platform_right = document.body.getElementsByClassName('lt-right'),
+		box_group,
+		platform_percent = [];
+	// количество объектов на платформе
+	currentAmt[0] = platform_left[0].getElementsByClassName('bag').length;
+	currentAmt[1] = platform_right[0].getElementsByClassName('bag').length;
+	// вес отдельных элементов на платформе
+	for (var box_group = 0; box_group < 2; box_group++) {
+		currentWeight[box_group] = [];
+		for (var j = 0; j < currentAmt[box_group]; j++) {
+			if (box_group == 0) {
+				currentWeight[box_group][j] = +platform_left[0].getElementsByClassName('bag')[j].dataset.weight;
+			} else {
+				currentWeight[box_group][j] = +platform_right[0].getElementsByClassName('bag')[j].dataset.weight;
+			}
+		}
+	}
+	// общий вес элементов на отдельной платформе
+	for (var i = 0; i < 2; i++) {
+		if (currentWeight[i].length == 1) {
+			currentOurWeight[i] = +currentWeight[i];
+			// запрос процента от общего веса на конкретной платформе
+			platform_percent[i] = getPerc(currentOurWeight[i]);
+		} else if (currentWeight[i].length > 1) {
+			currentOurWeight[i] = 0;
+			platform_percent[i] = 0;
+			currentOurWeight[i] = currentWeight[i].reduce(function(previousValue, currentValue, index, array) {
+										return previousValue + currentValue;
+									});
+			// запрос процента от общего веса на конкретной платформе
+			platform_percent[i] = getPerc(currentOurWeight[i]);
+		} else {
+			currentOurWeight[i] = 0;
+			platform_percent[i] = 0;
+		}
+	}
+	console.log('процент от общего веса чемоданов на платформе 1 и 2: ' + platform_percent);
+	getAxisDeg(platform_percent[0], platform_percent[1]);
+	getPlatformBias(platform_percent[0], platform_percent[1]);
+}
+// расчет процента от общего веса на отдельной платформе
+function getPerc(groupWeight) {
+	var perc;
+	perc = 100 * groupWeight / box_all_group_weight;
+	return perc;
+}
+// расчет наклона указателя
+function getAxisDeg (perc_0, perc_1) {
+	var deg = perc_1 - perc_0;
+	// сокращаем максимумы наклона до необходимых 44 градусов
+	if ( deg >= 50 ) {
+		deg = 50;
+	} else if ( deg <= -50 ) {
+		deg = -50;
+	}
+	deg = deg / 1.13;
+	// назначаем угол указателю
+	document.body.getElementsByClassName('libra-part-arrow')[0].style.transform = 'rotate('+ deg + 'deg)';
+
+	console.log('угол наклона указателя: ' + deg);
+
+	getPlatformBias();
+	return deg;
+}
+// расчет смещения платформ
+function getPlatformBias (perc_0, perc_1) {
+	var deg = perc_1 - perc_0,
+		bias = [];
+	if ( deg >= 50 ) {
+		deg = 50;
+	} else if ( deg <= -50 ) {
+		deg = -50;
+	}
+	deg = deg / 2;
+	deg = deg * 1.28;
+	if ( Math.sign(deg) == -1 ) {
+		bias[0] = -1 * deg;
+		bias[1] = 1 * deg;
+		// назначаем смещение платформам
+		document.body.getElementsByClassName('libra-part-platform-right')[0].style.marginTop = bias[1] + 'px';
+		document.body.getElementsByClassName('libra-part-platform-left')[0].style.marginTop = bias[0] + 'px';
+	} else {
+		bias[0] = -1 * deg;
+		bias[1] = 1 * deg;
+		// назначаем смещение платформам
+		document.body.getElementsByClassName('libra-part-platform-right')[0].style.marginTop = bias[1] + 'px';
+		document.body.getElementsByClassName('libra-part-platform-left')[0].style.marginTop = bias[0] + 'px';
+	}
 }
