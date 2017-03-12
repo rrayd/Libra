@@ -138,10 +138,7 @@ function libraCalcInit(e) {
 		triggerObject[0].appendChild(dragBag.elem);
 		dragBag.elem.style.left = e.pageX - dragBag.shiftX - localTriggerCoords.left + 'px';
 		dragBag.elem.style.top = '';
-		// анимация падения объекта на платформу пока не работает, но заложена
-		dragBag.elem.classList.add('animated-bag') {
-			dragBag.elem.style.bottom = '0';
-		};
+		dragBag.elem.style.bottom = '0';
 		// инициализируем расчет нагрузки
 		libraCalc();
 	}
