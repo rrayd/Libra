@@ -2,5 +2,5 @@
 Test task AbakPress for Dmitry Raikov
 
 ```terminal
-npm install gulp
+npm install
 gulp serve
