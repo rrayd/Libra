@@ -1,10 +1,14 @@
 "use strict";
 
+// запрещаем выделение текста
+document.ondragstart = function() { return false };
+document.body.onselectstart = function() { return false };
+
 // генерируем веса чемоданов
 var box_weight = [],
 	box_group, box_number, box_weight_value;
 // для возможности гарантированного уравновешивания весов 50:50
-// создаем двухмерный массив с равновесными группами по 6 объектов
+// создаем двумерный массив с равновесными группами по 6 объектов
 // ( в идеале, конечно группы должны быть с разным количеством объектов )
 for (box_group = 0; box_group < 2; box_group++) {
 	box_weight[box_group] = [];
@@ -67,14 +71,11 @@ function getGroupWeight() {
 
 // перенос объектов
 var dragBag = {};
-document.onmousedown = function(e) {
+document.onmousedown = function (e) {
 	// отменяем правый клик
 	if (e.which != 1) {
 		return;
 	}
-	// запрещаем выделение текста
-	document.ondragstart = function() { return false };
-	document.body.onselectstart = function() { return false };
 	// доходим до объекта в dom
 	var elem = e.target.closest('.bag');
 	// если не bag
@@ -89,8 +90,10 @@ document.onmousedown = function(e) {
     dragBag.shiftX = dragBag.downX - localCoords.left;
     dragBag.shiftY = dragBag.downY - localCoords.top;
 }
+
 var dst = document.body.getElementsByClassName('drag-system-trigger');
-document.onmousemove = function(e) {
+
+document.onmousemove = function (e) {
 	// ждем создания объекта
 	if (!dragBag.elem) return;
 	// показываем системный триггер для определения чаши
@@ -103,7 +106,8 @@ document.onmousemove = function(e) {
 	dragBag.elem.style.left = e.pageX - dragBag.shiftX + 'px';
 	dragBag.elem.style.top = e.pageY - dragBag.shiftY + 'px';
 }
-document.onmouseup = function(e) {
+
+document.onmouseup = function (e) {
 	// начнем расчет состояния сцены, если перенос вообще был
 	if (dragBag.elem) {
 		libraCalcInit(e);
@@ -111,15 +115,17 @@ document.onmouseup = function(e) {
 	// почистим объект для новых данных
 	dragBag = {};
 }
-function getLocalCoords(elem) {
+
+function getLocalCoords (elem) {
   var box = elem.getBoundingClientRect();
   return {
     top: box.top + pageYOffset,
     left: box.left + pageXOffset
   };
 }
+
 // расчет состояния весов
-function libraCalcInit(e) {
+function libraCalcInit (e) {
 	var trigger = findTrigger(e);
 	if (trigger == 'not-libra') {
 		// возвращаем объект к собратьям
@@ -130,7 +136,7 @@ function libraCalcInit(e) {
 		dragBag.elem.style.top = '';
 		dragBag.elem.style.bottom = 0 + 'px';
 		// инициализируем расчет нагрузки
-		libraCalc();
+		libraCalc ();
 	} else {
 		// ставим на платформу
 		var triggerObject = document.body.getElementsByClassName(trigger),
@@ -143,7 +149,7 @@ function libraCalcInit(e) {
 		libraCalc();
 	}
 }
-function findTrigger(e) {
+function findTrigger (e) {
 	var elem = document.elementFromPoint(e.clientX, e.clientY),
 		trigger_state;
 	if (elem.className == 'drag-system-trigger dst-left') {
@@ -199,12 +205,12 @@ function libraCalc () {
 			platform_percent[i] = 0;
 		}
 	}
-	console.log('процент от общего веса чемоданов на платформе 1 и 2: ' + platform_percent);
+	console.log ('процент от общего веса чемоданов на платформе 1 и 2: ' + platform_percent);
 	getAxisDeg(platform_percent[0], platform_percent[1]);
 	getPlatformBias(platform_percent[0], platform_percent[1]);
 }
 // расчет процента от общего веса на отдельной платформе
-function getPerc(groupWeight) {
+function getPerc (groupWeight) {
 	var perc;
 	perc = 100 * groupWeight / box_all_group_weight;
 	return perc;
