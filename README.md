@@ -1,5 +1,5 @@
 # Libra 89
-Test task AbakPress for Dmitry Raikov
+for just happines install :
 
 ```terminal
 npm install
